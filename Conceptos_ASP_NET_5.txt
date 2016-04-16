@@ -1,0 +1,214 @@
+ASP.NET 5:  Nuevo concepto completamente nuevo (Ahora, ASP.NET Core 1.0), comparar con última versión ASP.NET 4.6
+
+- Por que reinventar ASP.NET? Motivaciones
+	- Web Stack es viejo (apilamiento de web)
+	- Librería muy pesada por código antiguo que ya no se usa. Como cada versión de ASP.NET se ha ido acumulando, ha mantenido las versiones legacy desde 
+	  ASP.NET 1. La librería que mantiene código legacy es primeramente System.Web 
+	  (Con todas las versiones de MVC, Web API, Web Forms, etc)
+	- La dependencia de las actualizaciones a nivel de máquina a .NET era problemático. Jodido para testear, no habían versiones separadas, se chancaban
+	  entre actualización y actualización :/ (no se aíslan y cuando tienes un programa con una versión anterior de actualización, se jode)
+	  O no necesariamente tienes que usar la última versión del Framework.
+	- El rendimiento era lo más rápido que se podía en la plataforma existente. Esto pasaba en el timeframe de la primera cargada de la aplicación web,
+	  cuando se levanta por primera vez y luego a la segunda carga todo en memoria (y ya es más rápido).
+	- Hay muchas cosas que han cambiado sobre las otras versiones de ASP.NET, cambio muy dramático
+	
+- Que es ASP.NET 5?
+	- Una completa rescripción de la plataforma. Como plantea ahora las cosas?  
+		- Para empezar, esta plataforma es cross-platform (como Java) y open source
+		- Ahora todo está en una única plataforma. Se combinan MVC's y WebAPI, chau WebForms!
+		- Ahora todo es una dependencia. La aplicación será lo más ligera o delgada como el desarrollador la plantee.
+		  Ahora todo depende y está basado en los Nugget Packages
+		- Poca huella de memoria? 
+		- Va a permitir soporte de implementación múltiple. Puedes deployar en cloud scenarios y aparte solo en IIS, o dentro de línea de comandos
+		  Tu escoges.
+		  
+- Resumen:
+	- Multiplataforma para OSX (Apple) / Linux / Windows
+	- ASP.NET 5 Contiene MVC 6, EF7 (Entity Framework), entre otros
+	- También incluirá las librerías de .NET 4.6 (.NET CLR)
+	- Hay una nueva versión de CLR (.NET CoreCLR) .. Este también da soporte a otras plataformas
+	- Mono: para crear cross-platform apps con C# y Common Language Runtime (CLR). Disponible para otros sistemas operativos
+	- IIS Native Loader: se puede dar hosting a las apps .NET vía IIS usando el Native IIS loader. Tiene las mismas facilidades
+	- También hay Self Hosted apps (dnx.exe) por línea de comandos.
+	- Self Hosted solutions, versión aparte para otros sistemas operativos <> Windows. Similar a Node JS para ejecutar las aplicaciones por línea de comandos
+	  Similar al SF dnx.exe
+
+- Por qué hay 3 frameworks?
+	- Porque abarcan el tema de cross-platform (multiplataforma)
+	- El beneficio es en caso quieras moverte de IN-House apps a otro sistema operativo
+	- Los frameworks que hay:
+		- .NET 4.6		El clásico
+		- .NET CORE		El cross-platform / CoreCLR un sub conjunto de .NET framework (en progreso)
+		- Mono			El cross-platform existente open source para .NET
+	- 3rth party Nugget packages
+	- Ejemplos, envío de correos (no existe soluciones, dlls para eso), procesamiento de imágenes, etc.
+	- Coordinar con tu team cual de estos 3 frameworks usar.
+	
+- Otro golazo: Todo está completamente compuesto
+	- Uso de Nugget Packages para todo
+	- Todo encima de la capa .NET es un NuGet package
+		- Los frameworks son Bootstrap y CLR, no mucho más. De ahí todo lo demas es NuGet Package
+		- MVC, StaticFiles, Logging, Configuration, Identity, son solo paquetes a ser añadidos a un proyecto. 
+		  Con eso decides que paquetes escoger o remover
+		- Nueva filosofía: TODO es OPCIONAL en este framework
+		
+- Otra ventaja: Adoptar desarrollo de apps open source :)
+	- Primero, usa las herramientas existentes para el desarrollo web
+	- Luego, usa NPM para dar soporte a la herramienta (Package manager for Javascript)
+	- Usa Bower para dar soporte a librerías del lado del cliente (Otro package manager)
+	- Grunt y Gulp para automatización de builds (Herramientas de compilación). Te permite en JS validar sintaxis, concatenar ficheros, minificación,
+	  ejecución de tests en JS, etc.
+	- NuGet para paquetes .NET
+	- En realidad, nada de esto es requerido u obligatorio, pero está para el desarrollo de las apps web en este nuevo Framework
+	
+**************************************************************************
+
+INSTALANDO ASP.NET 5 en la máquina
+
+	- Ir a: https://get.asp.net
+	- Descargar ASP.NET 5 RC (Por sia bajarte las instrucciones y otros documentos)
+	- Seguir las instrucciones de: https://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-asp-net-5-with-visual-studio
+	- Para verificar que tenemos instalado el ASP.NET 5, hay que ir a la línea de comandos y digitar lo siguiente:
+		C:\Users\kgoytizolo> dmvn
+	  Aparecerá una herramienta de línea de comandos:
+	  	C:\Users\kgoytizolo> dmvn list			//Muestra todos los runtime versions en el sistema operativo y el default
+	  	
+	- Luego, darle lo siguiente:
+		C:\Users\kgoytizolo> dmvn upgrade		//Hará que se ponga activo el .NET Execution Environment (DNX) en la ruta
+		
+	- Extra: Para Windows 7 > Instalar: Visual C++ Redistributable for Visual Studio 2012 Update 4
+		
+	- Hay que asegurarse que la versión 	1.0.0-rc1-final / Runtime clr / x86 / win / este como default
+	
+	*En mi caso está este:			1.0.0-rc1-update2
+	
+	Esto corre sobre .NET runtime
+	
+	- Ahora, hay que instalar el dnvm install para 64 bits
+		C:\Users\kgoytizolo> dnvn install 1.0.0-rc1-final -arch x64	//Para tener la versión de 64 bits
+		
+	- PD: Si tienes problemas con W7, instalar también Windows Management Framework 4.0:
+		https://www.microsoft.com/en-us/download/details.aspx?id=40855
+		
+	*Da problemas con el PowerShell, hay que instalar primero el Windows Management Framework 4.0 antes que instalar el ASP.NET 5!!!!
+	
+	- Luego, instalar el CORE CRL:
+		C:\Users\kgoytizolo> dnvn install 1.0.0-rc1-final -r coreclr	//Es stand alone, sin dependencias de framework. Ejecutar nomás
+										//No requiere previo .NET así que por eso demora mas en instalar				
+	
+	- Luego, instalar el CORE CRL: (64 bits)
+		C:\Users\kgoytizolo> dnvn install 1.0.0-rc1-final -r coreclr -arch x64	//Se define la arquitectura en 64 bits
+		
+	*Con estos 4 runtimes tu puedes escoger cual quieres para desarrollar tus apps por defecto y dependiendo de tu sistema operativo. Con esto se 
+	 define el que finalmente vas a usar:
+	 	C:\Users\kgoytizolo> dnvm use 1.0.0-rc1-final -r clr -arch x64
+	 	
+	- Para ver la versión de tu dnx:
+	 	C:\Users\kgoytizolo> dnx --version
+	 	
+	- Pregunta... porque entre una ventana y otra se usa una versión distinta de dnx al abrir una nueva ventana?	
+		Configuración por sesión de cmd. Para hacerlo persistente, agregar -p
+		C:\Users\kgoytizolo> dnvm use 1.0.0-rc1-final -r clr -arch x64 -p	//Añade a 2 versiones de PATH (por usuario y proceso)
+		** Ahora con esto se convirtió en la versión activa de runtime a usar	//Por configuración de path
+		
+	- Definiendo el alias correcto de un runtime para no tipear la versión full
+		C:\Users\kgoytizolo> dnvm alias default 1.0.0-rc1-final -a x64 -r clr 
+		
+	- Comandos:
+		list		Lista los runtimes instalados
+		install		Instala un runtime indicado
+		-r		Indica tipo de runtime (coreclr / crl)
+		-a		Arquitectura del OS
+		-arch		Arquitectura del OS		
+		
+		
+**************************************************************************
+
+Mi primera aplicación con ASP.NET 5 - Versiones
+
+1.1 HOLA MUNDO! 	Para entender la dinámica de este nuevo paradigma de aplicación web
+
+	- Descargar Visual Studio Code:		https://code.visualstudio.com/
+						https://code.visualstudio.com/docs?start=true	
+	  (Es como un equivalente de Sublime text)
+	  
+	  https://john-dugan.com/visual-studio-code-vs-sublime-text/		Buenas comparaciones	
+							
+	- Se le pueden instalar extensiones, como: 
+		- C# for Visual Studio Code  (incluyendo debbuging)
+		- Python
+		- Go
+		- Debbugers for Chrome
+		- PowerShell
+		- Material-theme
+		- ESLint
+		- Angular 1 JS
+		
+	*Para instalar una extensión, solo necesitas hacer CONTROL + P en el Visual Studio Code y poner los siguientes comandos:
+		Ejemplo (C#):	ext install csharp
+		
+	- Creamos una carpeta aparte, la cual contendrá nuestro proyecto web. 
+		Ejemplo:	MyFirstAspNet5WebApp > click derecho y abres con Visual Studio Code
+	- Creamos dentro de la carpeta un archivo json inicial (base de la app web). 
+		Ejemplo:	project.json	//Contiene cosas que el proyecto tiene que saber, tales como:
+						//Los frameworks que van a usar, dependencias, los comandos a incluir entre otras cosas.
+						//Por ahora, vacío con {}
+	- Ahora, creamos un archivo C# con la lógica del negocio :)
+		En este caso, programamos como si fuera una clase de inicio de consola > public void Main(){...Console.WriteLine("Hello World! - !Hola Mundo!")}
+	- El archivo project.json es el que iniciará la app web.
+	- Estos 2 archivos son los básicos ojo! project.json + Program.cs para iniciar una app web
+	
+	*Lo bueno: No necesitas compilar, porque cada vez que grabas, ya el programa lo hace :) uff!!
+	
+	- Para probar la app web, abrimos con línea de comandos (archivo Program.cs > click derecho > abrir con línea de comandos / símbolo del sistema
+		Escribir: dnx run		//Para ejecutar el programa
+		Dnx es el entorno de ejecución de .NET para esta versión 5
+	
+	- Oh oh!! Houston, tenemos un problema!! 
+		Me sale el siguiente error: System.InvalidOperationException: The current runtime target framework is not compatible with 'MyFirstAspNet5WebApp'
+		
+	* Eso quiere decir que aún no hemos definido en la app web que framework runtime usaremos... 
+	  Para evitar este problema, hay que añadir el framework a usar y sus características dentro del archivo Json inicial: 
+	  
+	  {
+	  	"frameworks":{
+	  		"dnx451": {}
+	  	}
+	  }
+	  
+	- Ahora ejecutamos de nuevo :) 
+		C:\Users\kgoytizolo> dnx run		//Salió el mensaje de consola esperado! 
+		Hello World! - !Hola Mundo!
+		
+	- Ahora hay que subirlo al Git (repositorio) por primera vez:
+		- Inicializar repositorio en la opción que aparece dentro de Git
+		- El botón "Inicializar Git Repository" hará que todos los archivos del proyecto se añadan automáticamente. Ahora se puede trabajar con Git
+		  de manera local.
+		- Ahora, ponemos todos los archivos en Stage antes de commitear:
+			- Stage = "Almacenar provisionalmente"
+		- Dar commit a todos los archivos en Stage 
+			- Commit All 
+		- Finalmente, al clickear el nombre del branch en el status bar se abrirá la línea de comandos de GIT
+	
+		
+	  
+	  
+	  
+	
+	
+						
+	
+		
+
+
+		 
+	
+		
+	
+	
+		
+		
+	
+	
+	
+	  
