@@ -189,8 +189,11 @@ Mi primera aplicación con ASP.NET 5 - Versiones
 		- Dar commit a todos los archivos en Stage 
 			- Commit All 
 		- Finalmente, al clickear el nombre del branch en el status bar se abrirá la línea de comandos de GIT
+
+							
 	
 		
+	
 	  
 	  
 	  
